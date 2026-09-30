@@ -1,0 +1,40 @@
+{
+  "name": "macloans",
+  "version": "0.1.0",
+  "private": true,
+  "description": "MACNO Enterprise LLC — automated real estate & construction loan underwriting platform",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "tsc --noEmit",
+    "test": "vitest run",
+    "db:migrate": "tsx scripts/migrate.ts",
+    "db:seed": "tsx scripts/seed.ts",
+    "db:seed:demo": "tsx scripts/seed.ts --demo"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^1.1.0",
+    "bcryptjs": "^3.0.3",
+    "jose": "^6.2.12",
+    "next": "^15.5.27",
+    "pg": "^8.23.1",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "server-only": "^0.0.1",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.3",
+    "@types/node": "^26.6.3",
+    "@types/pg": "^8.23.1",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "dotenv": "^18.0.5",
+    "postcss": "^8.5.28",
+    "tailwindcss": "^4.3.3",
+    "tsx": "^4.23.15",
+    "typescript": "^5.9.3",
+    "vitest": "^5.0.3"
+  }
+}
