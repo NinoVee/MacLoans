@@ -5,6 +5,8 @@ import { DEFAULT_GUIDELINES } from "../src/lib/underwriting/guidelines";
 import type { ApplicationData, LoanType } from "../src/lib/underwriting/types";
 
 const demo = process.argv.includes("--demo");
+// Used by `vercel-build`: skip quietly when no admin password has been configured.
+const ifConfigured = process.argv.includes("--if-configured");
 
 async function upsertUser(email: string, password: string, fullName: string, role: string, company?: string) {
   const [row] = await q<{ id: string }>(
@@ -32,7 +34,13 @@ async function createApplication(applicantId: string, loanType: LoanType, data: 
 async function main() {
   const email = process.env.SEED_ADMIN_EMAIL ?? "admin@macnoenterprise.com";
   const password = process.env.SEED_ADMIN_PASSWORD;
-  if (!password) throw new Error("Set SEED_ADMIN_PASSWORD in .env.local before seeding.");
+  if (!password) {
+    if (ifConfigured) {
+      console.log("SEED_ADMIN_PASSWORD not set — skipping admin account creation.");
+      return close();
+    }
+    throw new Error("Set SEED_ADMIN_PASSWORD in .env.local before seeding.");
+  }
   await upsertUser(email, password, "MACNO Administrator", "admin", "MACNO Enterprise LLC");
   console.log(`✔ Admin account: ${email}`);
 

@@ -2,10 +2,11 @@
   "name": "macloans",
   "version": "0.1.0",
   "private": true,
-  "description": "MACNO Enterprise LLC — automated real estate & construction loan underwriting platform",
+  "description": "MACNO Enterprise LLC \u2014 automated real estate & construction loan underwriting platform",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "vercel-build": "tsx scripts/migrate.ts && tsx scripts/seed.ts --if-configured && next build",
     "start": "next start",
     "lint": "tsc --noEmit",
     "test": "vitest run",

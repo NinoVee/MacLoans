@@ -9,7 +9,8 @@ import { sanitizeApplicationData } from "@/lib/underwriting/sanitize";
 import { EDITABLE_STATUSES } from "@/lib/status";
 import { DOC_CATEGORIES } from "@/lib/underwriting/engine";
 
-const MAX_UPLOAD_BYTES = 10 * 1024 * 1024;
+// Vercel caps serverless request bodies at 4.5 MB, so keep uploads safely under that.
+const MAX_UPLOAD_BYTES = 4 * 1024 * 1024;
 const ALLOWED_TYPES = new Set([
   "application/pdf",
   "image/png",
@@ -83,7 +84,7 @@ export async function uploadDocumentAction(_: unknown, formData: FormData): Prom
   const app = await getAccessibleApplication(user, applicationId);
   if (!app) return { error: "Application not found." };
   if (!(file instanceof File) || file.size === 0) return { error: "Choose a file to upload." };
-  if (file.size > MAX_UPLOAD_BYTES) return { error: "Files must be 10 MB or smaller." };
+  if (file.size > MAX_UPLOAD_BYTES) return { error: "Files must be 4 MB or smaller. Split or compress larger PDFs." };
   if (file.type && !ALLOWED_TYPES.has(file.type)) return { error: "Unsupported file type. Upload a PDF, image, Word, Excel or CSV file." };
   if (!(category in DOC_CATEGORIES)) return { error: "Choose a document category." };
 

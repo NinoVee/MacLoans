@@ -5,7 +5,7 @@ import { Pool } from "pg";
 config({ path: ".env.local" });
 config();
 
-const url = process.env.DATABASE_URL;
+const url = process.env.DATABASE_URL || process.env.POSTGRES_URL;
 if (!url) {
   console.error("DATABASE_URL is not set. Copy .env.example to .env.local and add your Neon connection string.");
   process.exit(1);

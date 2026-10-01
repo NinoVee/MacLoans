@@ -36,7 +36,7 @@ income, contract, budget and so on) are added for each program.
 - **Next.js 15** (App Router, Server Actions) + **TypeScript** + **Tailwind CSS 4**
 - **Neon** serverless Postgres through `@neondatabase/serverless` (HTTP driver). Any other Postgres URL uses `pg` for local development
 - Auth: bcrypt password hashes and signed, HTTP-only JWT session cookies (`jose`). Roles are `applicant`, `underwriter`, `admin`
-- Documents are stored in Postgres (`bytea`, 10 MB limit). Downloads are access-checked in `/api/documents/[id]`
+- Documents are stored in Postgres (`bytea`, 4 MB per file to stay under Vercel's 4.5 MB request limit). Downloads are access-checked in `/api/documents/[id]`
 
 ## Getting started
 1. Create a Neon project at <https://console.neon.tech> and copy the connection string.
@@ -62,9 +62,24 @@ Demo logins (after `db:seed:demo`): `underwriter@demo.macloans.test` and `borrow
 | `npm run db:migrate` | Apply `db/schema.sql` (idempotent) |
 | `npm run db:seed` / `db:seed:demo` | Create the admin account (plus optional demo data) |
 
-## Deploying
-Deploy to Vercel (or any Node host). Set `DATABASE_URL` (use Neon's **pooled** connection string) and `AUTH_SECRET` in the
-environment variables, then run `npm run db:migrate` once against the production database.
+## Deploying to Vercel
+No terminal needed. Every Vercel build runs `npm run vercel-build`, which applies the database schema (idempotent),
+creates the admin account if `SEED_ADMIN_PASSWORD` is set, and then builds the app.
+
+1. **Import the repo.** In Vercel, choose **Add New → Project** and import `NinoVee/MacLoans`. The framework preset is detected as Next.js.
+2. **Connect Neon.** In the project, open **Storage → Create / Connect Database → Neon**. That sets `DATABASE_URL`
+   automatically. If you already have a Neon database, add its **pooled** connection string as `DATABASE_URL` yourself.
+3. **Add environment variables** (Settings → Environment Variables):
+   | Name | Value |
+   | --- | --- |
+   | `AUTH_SECRET` | A long random string, for example from `openssl rand -base64 32` |
+   | `SEED_ADMIN_EMAIL` | The admin login email |
+   | `SEED_ADMIN_PASSWORD` | The admin password (used only to create the account the first time) |
+4. **Deploy**, or redeploy if the first build ran before the variables were set. Then sign in with the admin email and password.
+
+After deploying, open `/api/health` on your site. It reports whether the database URL and `AUTH_SECRET` are set, whether the database is reachable, and whether the tables and admin account exist. It never shows secret values.
+
+Demo data is not created on Vercel. To add it, run `npm run db:seed:demo` locally against the same `DATABASE_URL`.
 
 ## Disclaimer
 Preliminary results are not a commitment to lend. Final approval is subject to lender requirements, verification,
