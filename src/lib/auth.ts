@@ -22,6 +22,11 @@ function secret() {
   return new TextEncoder().encode(s);
 }
 
+/** Throws a descriptive error if session signing isn't configured. Call before writing anything. */
+export function assertAuthConfigured() {
+  secret();
+}
+
 export const hashPassword = (pw: string) => bcrypt.hash(pw, 12);
 export const verifyPassword = (pw: string, hash: string) => bcrypt.compare(pw, hash);
 

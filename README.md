@@ -77,6 +77,8 @@ creates the admin account if `SEED_ADMIN_PASSWORD` is set, and then builds the a
    | `SEED_ADMIN_PASSWORD` | The admin password (used only to create the account the first time) |
 4. **Deploy**, or redeploy if the first build ran before the variables were set. Then sign in with the admin email and password.
 
+After deploying, open `/api/health` on your site. It reports whether the database URL and `AUTH_SECRET` are set, whether the database is reachable, and whether the tables and admin account exist. It never shows secret values.
+
 Demo data is not created on Vercel. To add it, run `npm run db:seed:demo` locally against the same `DATABASE_URL`.
 
 ## Disclaimer
